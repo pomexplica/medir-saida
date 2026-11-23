@@ -11,3 +11,4 @@ jobs:
       - run: pip install -q curl_cffi==0.17.0
       - run: python candidatos.py --saida direto --json res.json
       - run: cat res.json
+      - run: python fb_pag.py 100044561550831 4 || true
