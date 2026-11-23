@@ -1,0 +1,13 @@
+name: candidatos
+on: workflow_dispatch
+jobs:
+  medir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q curl_cffi==0.17.0
+      - run: python candidatos.py --saida direto --json res.json
+      - run: cat res.json
