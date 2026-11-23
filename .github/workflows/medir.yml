@@ -1,0 +1,18 @@
+name: medir-saida
+on: workflow_dispatch
+jobs:
+  medir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q curl_cffi==0.17.0 "yt-dlp[default]"
+      - run: curl -s https://ipinfo.io/json
+      - run: python medir_saidas.py --saidas v4 --rodadas 2 --pausa 4
+      - name: youtube
+        run: |
+          ok=0; n=0
+          for v in $(cat yt_ids.txt); do n=$((n+1)); if yt-dlp --js-runtimes node -f 'worst[ext=mp4]/worst' -o "/tmp/%(id)s.%(ext)s" --no-progress "https://www.youtube.com/watch?v=$v" > /tmp/yt.log 2>&1; then ok=$((ok+1)); echo "$v OK"; else echo "$v FALHA $(grep -E 'ERROR|WARNING' /tmp/yt.log | tail -2 | tr '\n' ' ')"; fi; sleep 8; done
+          echo "RESUMO_YT $ok de $n"
